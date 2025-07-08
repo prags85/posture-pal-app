@@ -2,15 +2,10 @@ services:
   - type: web
     name: posture-backend
     env: python
-    region: oregon
-    buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
     plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python backend/app.py
     envVars:
-      - key: PORT
-        value: 5000
+      - key: FLASK_ENV
+        value: development
     autoDeploy: true
-    buildFilter:
-      paths:
-        - backend/**/*
-    rootDir: backend
