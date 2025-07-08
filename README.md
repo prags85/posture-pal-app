@@ -80,7 +80,7 @@ python app.py
 
 
 
-
+💻 3. Frontend Setup (React)
 # Open a new terminal window and go to frontend
 cd frontend
 
