@@ -10,7 +10,7 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Root route for Render uptime check
+# ✅ Root route
 @app.route('/', methods=['GET'])
 def home():
     return "✅ Posture Pal API is running!"
@@ -70,7 +70,6 @@ def analyze():
 
     filename = uploaded_file.filename
     file_ext = Path(filename).suffix.lower()
-
     print(f"📁 Received file: {filename}, extension: {file_ext}")  # Debug
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
@@ -80,18 +79,30 @@ def analyze():
     feedback_list = []
 
     try:
-        if file_ext in ['.mp4', '.avi', '.mov']:
+        # ✅ Video processing
+        if file_ext in ['.mp4', '.avi', '.mov', '.webm', '.mkv']:
             cap = cv2.VideoCapture(tmp_path)
+            if not cap.isOpened():
+                os.remove(tmp_path)
+                return jsonify({'feedback': 'Could not open video. Try a different format or smaller size.'}), 400
+
+            print("🎥 Opened video:", tmp_path)
+            print("🎞 Frame size:", cap.get(cv2.CAP_PROP_FRAME_WIDTH), "x", cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            print("⏱ FPS:", cap.get(cv2.CAP_PROP_FPS))
+
             frame_count = 0
-            while True:
+            max_frames = 30  # limit processing for speed
+
+            while cap.isOpened() and frame_count < max_frames:
                 ret, frame = cap.read()
-                if not ret or frame_count >= 30:
+                if not ret:
                     break
                 feedback = analyze_frame(frame)
                 feedback_list.append(feedback)
                 frame_count += 1
             cap.release()
 
+        # ✅ Image processing
         elif file_ext in ['.jpg', '.jpeg', '.png', '.webp', '.jfif']:
             frame = cv2.imread(tmp_path)
             if frame is None:
@@ -105,12 +116,12 @@ def analyze():
     finally:
         os.remove(tmp_path)
 
-    # Return first bad posture found, or good
+    # ✅ Return feedback
     for fb in feedback_list:
         if "Bad posture" in fb:
             return jsonify({'feedback': fb})
     return jsonify({'feedback': feedback_list[0] if feedback_list else "No feedback"})
 
-# ✅ Do NOT use Flask dev server in production
+# ⚠️ Do NOT use Flask dev server in production
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
