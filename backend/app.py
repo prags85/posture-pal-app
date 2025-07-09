@@ -8,7 +8,12 @@ import os
 from pathlib import Path
 
 app = Flask(__name__)
-CORS(app)
+
+# ✅ Set CORS for specific origins
+CORS(app, origins=[
+    "http://localhost:3000",
+    "https://posturepal-app.netlify.app"
+])
 
 # ✅ Root route
 @app.route('/', methods=['GET'])
@@ -64,13 +69,16 @@ def analyze_frame(frame):
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
+    print("📥 /analyze endpoint hit")
+    print("📎 Uploaded files:", request.files)
+
     uploaded_file = request.files.get('video')
     if not uploaded_file:
         return jsonify({'feedback': 'No file received'}), 400
 
     filename = uploaded_file.filename
     file_ext = Path(filename).suffix.lower()
-    print(f"📁 Received file: {filename}, extension: {file_ext}")  # Debug
+    print(f"📁 Received file: {filename}, extension: {file_ext}")
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
         tmp.write(uploaded_file.read())
@@ -83,6 +91,7 @@ def analyze():
         if file_ext in ['.mp4', '.avi', '.mov', '.webm', '.mkv']:
             cap = cv2.VideoCapture(tmp_path)
             if not cap.isOpened():
+                print("❌ Failed to open video:", tmp_path)
                 os.remove(tmp_path)
                 return jsonify({'feedback': 'Could not open video. Try a different format or smaller size.'}), 400
 
@@ -91,13 +100,20 @@ def analyze():
             print("⏱ FPS:", cap.get(cv2.CAP_PROP_FPS))
 
             frame_count = 0
-            max_frames = 30  # limit processing for speed
+            max_frames = 30
 
             while cap.isOpened() and frame_count < max_frames:
                 ret, frame = cap.read()
+                print(f"📸 Frame {frame_count}: Read successful? {ret}")
                 if not ret:
                     break
+
+                if frame is None:
+                    print("⚠️ Frame is None")
+                    continue
+
                 feedback = analyze_frame(frame)
+                print(f"🔍 Feedback from frame {frame_count}: {feedback}")
                 feedback_list.append(feedback)
                 frame_count += 1
             cap.release()
@@ -116,7 +132,8 @@ def analyze():
     finally:
         os.remove(tmp_path)
 
-    # ✅ Return feedback
+    print("📤 Final feedback list:", feedback_list)
+
     for fb in feedback_list:
         if "Bad posture" in fb:
             return jsonify({'feedback': fb})
