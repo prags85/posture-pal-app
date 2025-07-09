@@ -18,7 +18,7 @@ MarkupSafe==3.0.2
 matplotlib==3.10.3
 mediapipe==0.10.21
 ml_dtypes==0.5.1
-numpy==2.2.6
+numpy>=1.26.4,<2.0          # ✅ compatible with mediapipe and jax
 opencv-contrib-python==4.12.0.88
 opencv-python==4.12.0.88
 opt_einsum==3.4.0
@@ -28,7 +28,7 @@ protobuf==4.25.8
 pycparser==2.22
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
-scipy==1.13.0
+scipy>=1.13.0,<1.14.0        # ✅ avoid scipy>=1.14 which conflicts with Python < 3.11
 six==1.17.0
 sounddevice==0.5.2
 Werkzeug==3.1.3
