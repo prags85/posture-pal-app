@@ -1,10 +1,34 @@
-# Ignore Python virtual environment
+# === Python / Flask ===
 venv/
-backend/venv/
-
-# Ignore Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.log
+.env
+.env.*
 
-# Ignore node_modules for React
+# === Flask uploads or temp files ===
+instance/
+*.sqlite3
+*.db
+.DS_Store
+*.bak
+
+# === Node.js / React ===
 frontend/node_modules/
+frontend/.env
+frontend/.cache/
+frontend/build/
+frontend/dist/
+frontend/npm-debug.log
+frontend/yarn-error.log
+frontend/package-lock.json
+
+# === VSCode and IDEs ===
+.vscode/
+.idea/
+
+# === OS junk ===
+*.DS_Store
+Thumbs.db
