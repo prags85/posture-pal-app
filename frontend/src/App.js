@@ -23,7 +23,7 @@ function App() {
     formData.append('video', video);
 
     try {
-      const res = await axios.post('http://localhost:5000/analyze', formData);
+      const res = await axios.post('https://posture-pal-app-5.onrender.com/analyze', formData);
       setResult(res.data.feedback);
     } catch (err) {
       setResult(err?.response?.data?.feedback || "❌ Something went wrong.");
@@ -31,7 +31,6 @@ function App() {
     setLoading(false);
   };
 
-  // Helper to determine icon and class
   const getResultIcon = () => {
     if (result.includes("Bad") || result.includes("wrong") || result.includes("Unsupported")) {
       return "❌";
