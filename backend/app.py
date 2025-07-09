@@ -107,4 +107,5 @@ def analyze():
     return jsonify({'feedback': feedback_list[0] if feedback_list else "No feedback"})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
+
