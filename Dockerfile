@@ -1,18 +1,28 @@
-FROM python:3.10
+# Use a slim Python image
+FROM python:3.10-slim
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Create working directory
 WORKDIR /app
 
-COPY backend/ /app/
-
-# Install system dependencies for OpenCV
-RUN apt-get update && apt-get install -y libgl1-mesa-glx
-
-# Upgrade pip
-RUN pip install --upgrade pip
+# Install system dependencies (needed for OpenCV & MediaPipe)
+RUN apt-get update && apt-get install -y \
+    ffmpeg libsm6 libxext6 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+# Copy app files
+COPY . .
+
+# Expose the port
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+# Run the app using gunicorn
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]

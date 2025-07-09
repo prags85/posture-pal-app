@@ -23,7 +23,7 @@ function App() {
     formData.append('video', video);
 
     try {
-      const res = await axios.post('https://posture-pal-app-5.onrender.com/analyze', formData);
+      const res = await axios.post('https://posture-pal-app-6.onrender.com/', formData);
       setResult(res.data.feedback);
     } catch (err) {
       setResult(err?.response?.data?.feedback || "❌ Something went wrong.");
