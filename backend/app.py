@@ -10,6 +10,11 @@ from pathlib import Path
 app = Flask(__name__)
 CORS(app)
 
+# ✅ Root route for Render uptime check
+@app.route('/', methods=['GET'])
+def home():
+    return "✅ Posture Pal API is running!"
+
 # MediaPipe setup
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
@@ -106,6 +111,6 @@ def analyze():
             return jsonify({'feedback': fb})
     return jsonify({'feedback': feedback_list[0] if feedback_list else "No feedback"})
 
+# ✅ Do NOT use Flask dev server in production
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
-
