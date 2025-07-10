@@ -9,10 +9,10 @@ from pathlib import Path
 
 app = Flask(__name__)
 
-# ✅ Set CORS for specific origins
 CORS(app, resources={r"/*": {"origins": [
     "http://localhost:3000",
-    "https://posturepal-app.netlify.app"
+    "https://posturepal-app.netlify.app",
+    "https://effulgent-hummingbird-28aa9d.netlify.app"  # ✅ Add your Netlify domain
 ]}})
 
 
