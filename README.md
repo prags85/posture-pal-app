@@ -34,7 +34,7 @@
 
 - 🚀 **Frontend** (Vercel): [https://posture-pal.vercel.app][(https://posture-pal.vercel.app)](https://effulgent-hummingbird-28aa9d.netlify.app/)
 - 🧠 **Backend API** (Render): [[https://posture-api.onrender.com](https://posture-api.onrender.com)](https://posture-pal-app-8.onrender.com)
-- 🎥 **Demo Video**: [Watch Demo](https://youtu.be/YOUR_VIDEO_LINK)
+- 🎥 **Demo Video**: [Watch Demo][(https://youtu.be/YOUR_VIDEO_LINK)](https://youtu.be/B7gdIMNm1S8)
 
 ---
 
