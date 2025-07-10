@@ -10,11 +10,12 @@ function App() {
 
   const handleUpload = (e) => {
     setVideo(e.target.files[0]);
+    setResult("");
   };
 
   const handleSubmit = async () => {
     if (!video) {
-      alert("📁 Please upload a video first!");
+      alert("📁 Please upload a video or image first!");
       return;
     }
 
@@ -23,10 +24,19 @@ function App() {
     formData.append('video', video);
 
     try {
-      const res = await axios.post('https://posture-pal-app-6.onrender.com/', formData);
+      const res = await axios.post(
+        'https://posture-pal-app-8.onrender.com/analyze',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       setResult(res.data.feedback);
     } catch (err) {
-      setResult(err?.response?.data?.feedback || "❌ Something went wrong.");
+      console.error(err);
+      setResult(err?.response?.data?.feedback || "❌ Something went wrong. Try again.");
     }
     setLoading(false);
   };
@@ -56,16 +66,24 @@ function App() {
 
       <div className="card">
         <label htmlFor="upload" className="upload-label">
-          <FaCloudUploadAlt /> Upload a posture video/image
+          <FaCloudUploadAlt /> Upload posture video/image
         </label>
-        <input id="upload" type="file" accept="video/*,image/*" onChange={handleUpload} hidden />
+        <input
+          id="upload"
+          type="file"
+          accept="video/*,image/*"
+          onChange={handleUpload}
+          hidden
+        />
 
         <button onClick={handleSubmit}>🔍 Check Posture</button>
 
         {loading && <p className="loading">⏳ Analyzing posture...</p>}
 
         {!loading && result && (
-          <p className={getResultClass()}>{getResultIcon()} {result}</p>
+          <p className={getResultClass()}>
+            {getResultIcon()} {result}
+          </p>
         )}
       </div>
 
